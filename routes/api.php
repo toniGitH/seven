@@ -25,7 +25,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('logout', [UserController::class, 'logout']);
 
 // RUTA PARA ACTUALIZAR EL NOMBRE DEL USUARIO
-Route::put('/user/{id}', [UserController::class, 'update']);
-/* Route::put('/user/{note}', [UserController::class, 'update'])->middleware('auth:api'); */
+Route::put('/user/{note}', [UserController::class, 'update'])->middleware('auth:api');
 
 
