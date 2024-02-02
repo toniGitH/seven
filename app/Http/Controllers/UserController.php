@@ -64,16 +64,11 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response(['message' => 'User not found'], 404);
-        }
-        $authUserId = Auth::user()->id;
-        if ($authUserId != $id) {
+        $userId = Auth::user()->id;
+        if ($userId != $id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $user = Auth::user();
-        User::where('id', $user->id)->update(['name'=>$request->name ? $request->name : 'anonimo']);
+        User::where('id', $userId)->update(['name'=>$request->name ? $request->name : 'anonimo']);
         return response()->json([
             'message' => 'Username updated successfully',
             'new name' => $request->name ? $request->name : 'anonimo'
