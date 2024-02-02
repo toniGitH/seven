@@ -15,16 +15,22 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// RUTA PARA REGISTRAR UN USUARIO:
+// ROUTE TO REGISTER A PLAYER
 Route::post('/register', [UserController::class, 'register']);
 
-// RUTA PARA LOGEAR A UN USUARIO YA REGISTRADO:
+// ROUTE TO LOGIN A REGISTERED PLAYER
 Route::post('/login', [UserController::class, 'login']);
 
-// RUTA PARA DESLOGEAR A UN USUARIO LOGEADO
+// ROUTE TO LOGOUT A LOGGED LAYER
 Route::post('logout', [UserController::class, 'logout']);
 
-// RUTA PARA ACTUALIZAR EL NOMBRE DEL USUARIO
+// ROUTE TO UPDATE A REGISTER PLAYER NAME
 Route::put('/user/{note}', [UserController::class, 'update'])->middleware('auth:api');
+
+// ROUTE TO GET A PLAYER LIST
+Route::get('/user', [UserController::class, 'index'])->middleware('auth:api');
+
+
+
 
 

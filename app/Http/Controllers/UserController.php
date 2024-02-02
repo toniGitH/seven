@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 
+    public function index(){
+        $user = Auth::user();
+        $players = User::where('id', '!=', $user->id)->get();
+        return response()->json([
+            'players' => $players
+        ]);
+    }
+
     public function register(RegisterUserRequest $request)
     {
         $validatedData = $request->all();
