@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// RUTA PARA REGISTRAR UN USUARIO:
+Route::post('/register', [UserController::class, 'register']);
+
+// RUTA PARA LOGEAR A UN USUARIO YA REGISTRADO:
+Route::post('/login', [UserController::class, 'login']);
+
+// RUTA PARA DESLOGEAR A UN USUARIO LOGEADO
+Route::post('logout', [UserController::class, 'logout']);
+
+// RUTA PARA ACTUALIZAR EL NOMBRE DEL USUARIO
+Route::put('/user/{id}', [UserController::class, 'update']);
+/* Route::put('/user/{note}', [UserController::class, 'update'])->middleware('auth:api'); */
+
+
