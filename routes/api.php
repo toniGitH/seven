@@ -16,19 +16,19 @@ use App\Http\Controllers\UserController;
 */
 
 // ROUTE TO REGISTER A PLAYER
-Route::post('/register', [UserController::class, 'register']);
+Route::post('/players', [UserController::class, 'register']);// NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO LOGIN A REGISTERED PLAYER
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'login']);// NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO LOGOUT A LOGGED LAYER
-Route::post('logout', [UserController::class, 'logout']);
+Route::post('/logout', [UserController::class, 'logout']);// NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO UPDATE A REGISTER PLAYER NAME
-Route::put('/user/{note}', [UserController::class, 'update'])->middleware('auth:api');
+Route::put('/players/{note}', [UserController::class, 'update'])->middleware('auth:api');// PROTEGIDA => ESTÁ OK
 
 // ROUTE TO GET A PLAYER LIST
-Route::get('/user', [UserController::class, 'index'])->middleware('auth:api');
+Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ADMIN => PENDIENTE
 
 
 
