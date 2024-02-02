@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RollController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,19 +17,23 @@ use App\Http\Controllers\UserController;
 */
 
 // ROUTE TO REGISTER A PLAYER
-Route::post('/players', [UserController::class, 'register']);// NO SE PROTEGE => ESTÁ OK
+Route::post('/players', [UserController::class, 'register']); // NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO LOGIN A REGISTERED PLAYER
-Route::post('/login', [UserController::class, 'login']);// NO SE PROTEGE => ESTÁ OK
+Route::post('/login', [UserController::class, 'login']); // NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO LOGOUT A LOGGED LAYER
-Route::post('/logout', [UserController::class, 'logout']);// NO SE PROTEGE => ESTÁ OK
+Route::post('/logout', [UserController::class, 'logout']); // NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO UPDATE A REGISTER PLAYER NAME
-Route::put('/players/{note}', [UserController::class, 'update'])->middleware('auth:api');// PROTEGIDA => ESTÁ OK
+Route::put('/players/{id}', [UserController::class, 'update'])->middleware('auth:api'); // PROTEGIDA => ESTÁ OK
 
 // ROUTE TO GET A PLAYER LIST
 Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ADMIN => PENDIENTE
+
+// ROUTE TO EXECUTE A ROLL DICE
+Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware('auth:api'); // SOLO PERMITIR A PLAYER => PENDIENTE
+
 
 
 
