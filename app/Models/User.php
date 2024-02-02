@@ -18,6 +18,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    
     protected $fillable = [
         'name',
         'email',
@@ -43,4 +44,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // PENDIENTE CREAR RELACIÓN CON EL MODELO USER
+/*     public function bets()
+    {
+        return $this->hasMany(Bet::class);
+    } */
 }

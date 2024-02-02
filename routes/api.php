@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// ROUTE TO REGISTER A PLAYER
+Route::post('/players', [UserController::class, 'register']);// NO SE PROTEGE => ESTÁ OK
+
+// ROUTE TO LOGIN A REGISTERED PLAYER
+Route::post('/login', [UserController::class, 'login']);// NO SE PROTEGE => ESTÁ OK
+
+// ROUTE TO LOGOUT A LOGGED LAYER
+Route::post('/logout', [UserController::class, 'logout']);// NO SE PROTEGE => ESTÁ OK
+
+// ROUTE TO UPDATE A REGISTER PLAYER NAME
+Route::put('/players/{note}', [UserController::class, 'update'])->middleware('auth:api');// PROTEGIDA => ESTÁ OK
+
+// ROUTE TO GET A PLAYER LIST
+Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ADMIN => PENDIENTE
+
+
+
+
+
