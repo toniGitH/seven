@@ -37,6 +37,7 @@ Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware
 // ROUTE TO DELETE ALL ROLLS OF A PLAYER
 Route::delete('/players/{id}/games', [RollController::class, 'destroy'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
-
+// ROUTE TO SHOW ALL ROLLS OF A PLAYER
+Route::get('/players/{id}/games', [RollController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
 

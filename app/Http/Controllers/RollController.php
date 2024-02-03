@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Auth;
 class RollController extends Controller
 {
     
-    public function index()
+    public function index($id)
     {
-        
+        $userId = Auth::user()->id;
+        if ($userId != $id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+    
+        $rolls = Roll::where('user_id', $userId)->get();
+    
+        return response()->json([
+            'message' => 'These are all the ' . Auth::user()->name . '\'s rolls',
+            'rolls' => $rolls
+        ], 200); 
     }
     
     public function store($id)
@@ -28,13 +38,13 @@ class RollController extends Controller
 
         $roll= Roll::create([
             'dice1' => $dice1,
-            'dice2' => $dice1,
+            'dice2' => $dice2,
             'won' => $won,
             'user_id' => $userId
         ]);
 
         return response([
-            'message' => 'Roll executed correctly',
+            'message' => Auth::user()->name . '\'s roll executed correctly',
             'roll result' => $roll
         ], 201);
     }
@@ -58,7 +68,7 @@ class RollController extends Controller
 
         Roll::where('user_id', $userId)->delete();
         
-        return response()->json(['message' => 'All rolls deleted successfully'], 200);
+        return response()->json(['message' => 'All ' . Auth::user()->name . '\'s rolls deleted successfully'], 200);
     }
 
 }
