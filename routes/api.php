@@ -38,7 +38,7 @@ Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware
 Route::delete('/players/{id}/games', [RollController::class, 'destroy'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
 // ROUTE TO SHOW ALL ROLLS OF A SPECIFIC PLAYER
-Route::get('/players/{id}/games', [RollController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
+Route::get('/players/{id}/games', [RollController::class, 'show'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
 // ROUTE TO SHOW THE WIN RATE OF A SPECIFIC PLAYER
 Route::get('/players/{id}/average', [RollController::class, 'getWinRate'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE

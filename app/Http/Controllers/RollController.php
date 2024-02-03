@@ -9,23 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class RollController extends Controller
 {
     
-    public function index($id)
+    public function index()
     {
-        $userId = Auth::user()->id;
-        if ($userId != $id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        $rolls = Roll::where('user_id', $userId)->get();
-        $totalRolls = Roll::where('user_id', $id)->count();
-        $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
-        $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
         
-        return response()->json([
-            'message' => 'These are all the ' . ucfirst(Auth::user()->name) . '\'s rolls',
-            'current success rate' => $winRate . '%',
-            'rolls' => $rolls
-        ], 200); 
     }
     
     public function store($id)
@@ -53,9 +39,23 @@ class RollController extends Controller
         ], 201);
     }
 
-    public function show(Roll $roll)
+    public function show($id)
     {
-        //
+        $userId = Auth::user()->id;
+        if ($userId != $id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $rolls = Roll::where('user_id', $userId)->get();
+        $totalRolls = Roll::where('user_id', $id)->count();
+        $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
+        $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+        
+        return response()->json([
+            'message' => 'These are all the ' . ucfirst(Auth::user()->name) . '\'s rolls',
+            'current success rate' => $winRate . '%',
+            'rolls' => $rolls
+        ], 200); 
     }
 
     public function update(Request $request, Roll $roll)
