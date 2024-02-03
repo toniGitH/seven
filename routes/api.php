@@ -31,6 +31,9 @@ Route::put('/players/{id}', [UserController::class, 'update'])->middleware('auth
 // ROUTE TO GET THE ALL PLAYER LIST WITH WIN RATE
 Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL ADMIN => PENDIENTE
 
+// ROUTE TO GET THE PLAYER RANKING ORDERED BY DESCENDING WIN RATE (FROM HIGHEST TO LOWEST)
+Route::get('/players/ranking', [UserController::class, 'ranking'])->middleware('auth:api'); // SOLO PERMITIR A ROLL ADMIN => PENDIENTE
+
 // ROUTE TO EXECUTE A ROLL DICE OF A SPECIFIC PLAYER
 Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 

@@ -37,6 +37,44 @@ class UserController extends Controller
         ]);
     }
 
+    public function ranking()
+    {
+        $user = Auth::user();
+        $players = User::where('id', '!=', $user->id)->get();
+
+        $playersWithWinRate = [];
+
+        foreach ($players as $player) {
+            $totalRolls = Roll::where('user_id', $player->id)->count();
+            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
+            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+
+            $playersWithWinRate[] = [
+                'user' => ucfirst($player->name),
+                'win_rate' => $winRate 
+            ];
+        }
+
+        usort($playersWithWinRate, function ($a, $b) {
+            return $b['win_rate'] - $a['win_rate'];
+        });
+
+        foreach ($playersWithWinRate as &$player) {
+            $player['win_rate'] .= '%';
+        }
+
+        $rank = 1;
+        foreach ($playersWithWinRate as &$player) {
+            $player['rank'] = $rank . 'º';
+            $rank++;
+        }
+
+        return response()->json([
+            'message' => 'Player ranking by win rate',
+            'players' => $playersWithWinRate
+        ]);
+    }
+
     public function register(RegisterUserRequest $request)
     {
         $validatedData = $request->all();
