@@ -7,16 +7,33 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Roll;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         $user = Auth::user();
         $players = User::where('id', '!=', $user->id)->get();
+
+        $playersWithWinRate = [];
+
+        foreach ($players as $player) {
+            $totalRolls = Roll::where('user_id', $player->id)->count();
+            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
+            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+
+            $playersWithWinRate[] = [
+                'user' => ucfirst($player->name),
+                'win_rate' => $winRate . '%'
+            ];
+        }
+
         return response()->json([
-            'players' => $players
+            'message' => 'Players list with succes rate',
+            'players' => $playersWithWinRate
         ]);
     }
 

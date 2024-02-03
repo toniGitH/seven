@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Roll;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,7 @@ class RollController extends Controller
     {
         
     }
-    
+
     public function store($id)
     {
         $userId = Auth::user()->id;

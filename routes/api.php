@@ -23,12 +23,12 @@ Route::post('/players', [UserController::class, 'register']); // NO SE PROTEGE =
 Route::post('/login', [UserController::class, 'login']); // NO SE PROTEGE => ESTÁ OK
 
 // ROUTE TO LOGOUT A LOGGED LAYER
-Route::post('/logout', [UserController::class, 'logout']); // NO SE PROTEGE => ESTÁ OK
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:api');
 
 // ROUTE TO UPDATE THE NAME OF A REGISTERED PLAYER
 Route::put('/players/{id}', [UserController::class, 'update'])->middleware('auth:api'); // PROTEGIDA => ESTÁ OK
 
-// ROUTE TO GET THE ALL PLAYER LIST
+// ROUTE TO GET THE ALL PLAYER LIST WITH WIN RATE
 Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL ADMIN => PENDIENTE
 
 // ROUTE TO EXECUTE A ROLL DICE OF A SPECIFIC PLAYER
@@ -42,3 +42,4 @@ Route::get('/players/{id}/games', [RollController::class, 'show'])->middleware('
 
 // ROUTE TO SHOW THE WIN RATE OF A SPECIFIC PLAYER
 Route::get('/players/{id}/average', [RollController::class, 'getWinRate'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
+
