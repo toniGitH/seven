@@ -75,6 +75,62 @@ class UserController extends Controller
         ]);
     }
 
+    public function winner()
+    {
+        $user = Auth::user();
+        $players = User::where('id', '!=', $user->id)->get();
+        $maxWinRate = 0;
+        $winner = null;
+
+        foreach ($players as $player) {
+            $totalRolls = Roll::where('user_id', $player->id)->count();
+            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
+            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+
+            if ($winRate > $maxWinRate) {
+                $maxWinRate = $winRate;
+                $winner = [
+                    'user' => ucfirst($player->name),
+                    'win_rate' => $winRate . '%'
+                ];
+            }
+        }
+
+        return response()->json([
+            'message' => 'Player with the highest win rate',
+            'winner' => $winner
+        ]);
+    }
+
+    public function loser()
+    {
+        $user = Auth::user();
+        $players = User::where('id', '!=', $user->id)->get();
+
+        $minWinRate = PHP_INT_MAX;
+        $loser = null;
+
+        foreach ($players as $player) {
+            $totalRolls = Roll::where('user_id', $player->id)->count();
+            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
+            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+
+            if ($winRate < $minWinRate) {
+                $minWinRate = $winRate;
+                $loser = [
+                    'user' => ucfirst($player->name),
+                    'win_rate' => $winRate . '%'
+                ];
+            }
+        }
+
+        return response()->json([
+            'message' => 'Player with the lowest win rate',
+            'loser' => $loser
+        ]);
+    }
+
+
     public function register(RegisterUserRequest $request)
     {
         $validatedData = $request->all();
