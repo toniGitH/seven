@@ -49,8 +49,16 @@ class RollController extends Controller
         //
     }
 
-    public function destroy(Roll $roll)
+    public function destroy($id)
     {
-        //
+        $userId = Auth::user()->id;
+        if ($userId != $id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        Roll::where('user_id', $userId)->delete();
+        
+        return response()->json(['message' => 'All rolls deleted successfully'], 200);
     }
+
 }

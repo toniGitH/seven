@@ -29,12 +29,13 @@ Route::post('/logout', [UserController::class, 'logout']); // NO SE PROTEGE => E
 Route::put('/players/{id}', [UserController::class, 'update'])->middleware('auth:api'); // PROTEGIDA => ESTÁ OK
 
 // ROUTE TO GET A PLAYER LIST
-Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ADMIN => PENDIENTE
+Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL ADMIN => PENDIENTE
 
 // ROUTE TO EXECUTE A ROLL DICE
-Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware('auth:api'); // SOLO PERMITIR A PLAYER => PENDIENTE
+Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
-
+// ROUTE TO DELETE ALL ROLLS OF A PLAYER
+Route::delete('/players/{id}/games', [RollController::class, 'destroy'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
 
 
