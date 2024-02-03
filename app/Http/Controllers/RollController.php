@@ -15,11 +15,15 @@ class RollController extends Controller
         if ($userId != $id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-    
+
         $rolls = Roll::where('user_id', $userId)->get();
-    
+        $totalRolls = Roll::where('user_id', $id)->count();
+        $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
+        $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+        
         return response()->json([
-            'message' => 'These are all the ' . Auth::user()->name . '\'s rolls',
+            'message' => 'These are all the ' . ucfirst(Auth::user()->name) . '\'s rolls',
+            'current success rate' => $winRate . '%',
             'rolls' => $rolls
         ], 200); 
     }
@@ -44,7 +48,7 @@ class RollController extends Controller
         ]);
 
         return response([
-            'message' => Auth::user()->name . '\'s roll executed correctly',
+            'message' =>ucfirst(Auth::user()->name) . '\'s roll executed correctly',
             'roll result' => $roll
         ], 201);
     }
@@ -68,7 +72,23 @@ class RollController extends Controller
 
         Roll::where('user_id', $userId)->delete();
         
-        return response()->json(['message' => 'All ' . Auth::user()->name . '\'s rolls deleted successfully'], 200);
+        return response()->json(['message' => 'All ' . ucfirst(Auth::user()->name) . '\'s rolls deleted successfully'], 200);
     }
 
+    public function getWinRate($id)
+    {
+        $userId = Auth::user()->id;
+        if ($userId != $id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $totalRolls = Roll::where('user_id', $id)->count();
+        $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
+        $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
+
+        return response()->json([
+            'user' => ucfirst(Auth::user()->name),
+            'current success rate' => $winRate . '%'
+        ], 200);
+    }
 }

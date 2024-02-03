@@ -25,19 +25,20 @@ Route::post('/login', [UserController::class, 'login']); // NO SE PROTEGE => EST
 // ROUTE TO LOGOUT A LOGGED LAYER
 Route::post('/logout', [UserController::class, 'logout']); // NO SE PROTEGE => ESTÁ OK
 
-// ROUTE TO UPDATE A REGISTER PLAYER NAME
+// ROUTE TO UPDATE THE NAME OF A REGISTERED PLAYER
 Route::put('/players/{id}', [UserController::class, 'update'])->middleware('auth:api'); // PROTEGIDA => ESTÁ OK
 
-// ROUTE TO GET A PLAYER LIST
+// ROUTE TO GET THE ALL PLAYER LIST
 Route::get('/players', [UserController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL ADMIN => PENDIENTE
 
-// ROUTE TO EXECUTE A ROLL DICE
+// ROUTE TO EXECUTE A ROLL DICE OF A SPECIFIC PLAYER
 Route::post('/players/{id}/games', [RollController::class, 'store'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
-// ROUTE TO DELETE ALL ROLLS OF A PLAYER
+// ROUTE TO DELETE ALL ROLLS OF A SPECIFIC PLAYER
 Route::delete('/players/{id}/games', [RollController::class, 'destroy'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
-// ROUTE TO SHOW ALL ROLLS OF A PLAYER
+// ROUTE TO SHOW ALL ROLLS OF A SPECIFIC PLAYER
 Route::get('/players/{id}/games', [RollController::class, 'index'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
 
-
+// ROUTE TO SHOW THE WIN RATE OF A SPECIFIC PLAYER
+Route::get('/players/{id}/average', [RollController::class, 'getWinRate'])->middleware('auth:api'); // SOLO PERMITIR A ROLL PLAYER => PENDIENTE
