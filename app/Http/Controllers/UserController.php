@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Roll;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class UserController extends Controller
 {
 
+    use HasRoles;
     public function register(RegisterUserRequest $request)
     {
         $validatedData = $request->all();
@@ -27,7 +29,7 @@ class UserController extends Controller
             'message' => 'User ' . ucfirst($user->name) . ' registered successfully',
             'user' => $user,
             'token' => $token
-        ]);
+        ], 201);
     }
 
     public function login(LoginUserRequest $request)
@@ -43,7 +45,7 @@ class UserController extends Controller
             'message' => 'User ' . ucfirst($user->name) . ' logged successfully',
             'token' => $token,
             'user' => $user
-        ]);
+        ], 200);
     }
 
     public function logout()
@@ -52,25 +54,29 @@ class UserController extends Controller
         $user->tokens->each->revoke();
         return response()->json([
             'message' => 'User ' . ucfirst($user->name) . ' logged out successfully'
-        ]);
+        ], 200);
     }
 
     public function update(UpdateUserRequest $request, $id)
     {
         $userId = Auth::user()->id;
         if ($userId != $id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            return response()->json([
+                'error' => 'Unauthorized',
+                'warning' => 'You don\'t have permission to update another user\'s names '
+            ], 403);
         }
         User::where('id', $userId)->update(['name'=>$request->name ? $request->name : 'anonimo']);
         return response()->json([
             'message' => 'Username updated successfully',
             'new name' => $request->name ? $request->name : 'anonimo'
-        ]);
+        ], 200);
     }
 
     public function index()
     {
         $user = Auth::user();
+
         $players = User::where('id', '!=', $user->id)->get();
 
         $playersWithWinRate = [];
@@ -89,7 +95,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Players list with succes rate',
             'players' => $playersWithWinRate
-        ]);
+        ], 200);
     }
 
     public function ranking()
@@ -127,7 +133,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Player ranking by win rate',
             'players' => $playersWithWinRate
-        ]);
+        ], 200);
     }
 
     public function winner()
@@ -154,7 +160,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Player with the highest win rate',
             'winner' => $winner
-        ]);
+        ], 200);
     }
 
     public function loser()
@@ -182,7 +188,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Player with the lowest win rate',
             'loser' => $loser
-        ]);
+        ], 200);
     }
 
 }
