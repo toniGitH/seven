@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class RollController extends Controller
 {
     
-    public function index()
-    {
-        
-    }
-
     public function store($id)
     {
         $userId = Auth::user()->id;
@@ -59,11 +54,6 @@ class RollController extends Controller
         ], 200); 
     }
 
-    public function update(Request $request, Roll $roll)
-    {
-        //
-    }
-
     public function destroy($id)
     {
         $userId = Auth::user()->id;
@@ -73,7 +63,9 @@ class RollController extends Controller
 
         Roll::where('user_id', $userId)->delete();
         
-        return response()->json(['message' => 'All ' . ucfirst(Auth::user()->name) . '\'s rolls deleted successfully'], 200);
+        return response()->json([
+            'message' => 'All ' . ucfirst(Auth::user()->name) . '\'s rolls deleted successfully'
+        ], 200);
     }
 
     public function getWinRate($id)
