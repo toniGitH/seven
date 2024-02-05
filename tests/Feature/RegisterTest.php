@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
@@ -20,6 +19,16 @@ class RegisterTest extends TestCase
         Artisan::call('migrate');
         $this->createPersonalAccessTokenClient();
         $this->seed();
+    }
+
+    protected function createPersonalAccessTokenClient()
+    {
+        $clientRepository = app(ClientRepository::class);
+        $clientRepository->createPersonalAccessClient(
+            null,
+            'Personal Access Client',
+            'http://localhost'
+        );
     }
 
     public function testRegisterWithValidData()
@@ -131,13 +140,5 @@ class RegisterTest extends TestCase
         ]);
     }
 
-    protected function createPersonalAccessTokenClient()
-    {
-        $clientRepository = app(ClientRepository::class);
-        $clientRepository->createPersonalAccessClient(
-            null, // No se requiere el usuario
-            'Personal Access Client', // Nombre del cliente
-            'http://localhost' // Redirección del cliente
-        );
-    }
+
 }
