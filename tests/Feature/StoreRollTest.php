@@ -39,8 +39,8 @@ class StoreRollTest extends TestCase
 
         $response = $this->actingAs($playerUser)->json('POST', '/api/players/' . $playerUser->id . '/games');
 
-        $response->assertStatus(201)
-                 ->assertJsonStructure([
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
                      'message',
                      'roll result' => [
                          'id',
