@@ -83,11 +83,11 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-                     'message' => 'The email field is required.',
-                     'errors' => [
-                         'email' => ['The email field is required.'],
-                     ],
-                 ]);
+                    'message' => 'The email field is required.',
+                    'errors' => [
+                        'email' => ['The email field is required.'],
+                    ],
+        ]);
     }
 
     public function testRegisterWithInvalidEmailFormat()
@@ -99,11 +99,11 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-                     'message' => 'The email field must be a valid email address.',
-                     'errors' => [
-                         'email' => ['The email field must be a valid email address.'],
-                     ],
-                 ]);
+                    'message' => 'The email field must be a valid email address.',
+                    'errors' => [
+                        'email' => ['The email field must be a valid email address.'],
+                    ],
+        ]);
     } // This test fails if an email without a dot is considered incorrect. Possible bug in Laravel.
 
     public function testLoginWithUnregisteredEmail()
@@ -119,8 +119,8 @@ class LoginTest extends TestCase
         ]);
 
         $this->assertNotEquals($user->email, 'unregisteredemail@email.com');
-        $response->assertStatus(422)
-                ->assertJson([
+        $response->assertStatus(422);
+        $response->assertJson([
                     'message' => 'The provided credentials are incorrect.',
         ]);
     }
@@ -133,11 +133,11 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-                     'message' => 'The password field is required.',
-                     'errors' => [
-                         'password' => ['The password field is required.'],
-                     ],
-                 ]);
+                    'message' => 'The password field is required.',
+                    'errors' => [
+                        'password' => ['The password field is required.'],
+                    ],
+        ]);
     }
 
     public function testLoginWithUnregisteredPassword()
@@ -154,9 +154,9 @@ class LoginTest extends TestCase
         ]);
 
         $this->assertNotEquals($user->password, 'unregisteredPassword');
-        $response->assertStatus(422)
-                ->assertJson([
-                    'message' => 'The provided credentials are incorrect.',
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'The provided credentials are incorrect.',
         ]);
     }
 
