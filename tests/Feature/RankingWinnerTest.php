@@ -30,7 +30,7 @@ class RankingWinnerTest extends TestCase
         );
     }
 
-    public function testRankingExecutedByAuthenticatedAdmin()
+    public function testRankingWinnerExecutedByAuthenticatedAdmin()
     {
 
         $adminUser = User::whereHas('roles', function ($query) {
@@ -47,7 +47,7 @@ class RankingWinnerTest extends TestCase
         ]);
     }
 
-    public function testRankingExecutedByAuthenticatedPlayer()
+    public function testRankingWinnerExecutedByAuthenticatedPlayer()
     {
 
         $playerUser = User::whereHas('roles', function ($query) {
