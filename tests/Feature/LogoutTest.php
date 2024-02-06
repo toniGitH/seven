@@ -33,10 +33,10 @@ class LogoutTest extends TestCase
         );
     }
     
-    public function testSuccessfulLogout(){
+    public function testAuthenticatedLogout(){
 
         $user = User::factory()->create();
-        $this->actingAs($user, 'api');
+        $this->actingAs($user);
  
         $response = $this->json('POST', 'api/logout');
  
