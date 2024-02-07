@@ -17,10 +17,10 @@ use App\Http\Controllers\RollController;
 */
 
     // ROUTE TO REGISTER A PLAYER
-Route::post('/players', [UserController::class, 'register']);
+Route::post('/players', [UserController::class, 'register']); // Grant permission to: All
 
     // ROUTE TO LOGIN A REGISTERED USER (VALID FOR ADMIN & PLAYERS)
-Route::post('/login', [UserController::class, 'login']);    
+Route::post('/login', [UserController::class, 'login']); // Grant permission to: All
 
     // ROUTES PROTECTED WITH PASSPORT
 Route::middleware('auth:api')->group(function () {
