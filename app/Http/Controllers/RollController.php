@@ -61,8 +61,15 @@ class RollController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        $rolls = Roll::where('user_id', $userId)->get();
+
+        if ($rolls->isEmpty()) {
+            return response()->json(['message' => 'No rolls found for the user'], 404);
+        }
+
+        //Roll::where('user_id', $userId)->delete();
         Roll::where('user_id', $userId)->delete();
-        
+
         return response()->json([
             'message' => 'All ' . ucfirst(Auth::user()->name) . '\'s rolls deleted successfully'
         ], 200);
