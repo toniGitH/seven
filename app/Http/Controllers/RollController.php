@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Roll;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RollController extends Controller
@@ -43,6 +41,11 @@ class RollController extends Controller
         }
 
         $rolls = Roll::where('user_id', $userId)->get();
+
+        if ($rolls->isEmpty()) {
+            return response()->json(['message' => 'No rolls found for the user'], 404);
+        }
+
         $totalRolls = Roll::where('user_id', $id)->count();
         $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
         $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
@@ -67,7 +70,6 @@ class RollController extends Controller
             return response()->json(['message' => 'No rolls found for the user'], 404);
         }
 
-        //Roll::where('user_id', $userId)->delete();
         Roll::where('user_id', $userId)->delete();
 
         return response()->json([

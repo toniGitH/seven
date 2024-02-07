@@ -7,12 +7,9 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
-use Laravel\Passport\Passport;
-
 
 class LogoutTest extends TestCase
 {
-
     use RefreshDatabase;
     
     public function setUp(): void
@@ -33,8 +30,8 @@ class LogoutTest extends TestCase
         );
     }
     
-    public function testAuthenticatedLogout(){
-
+    public function testAuthenticatedLogout()
+    {
         $user = User::factory()->create();
         $this->actingAs($user);
  

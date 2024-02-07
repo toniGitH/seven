@@ -142,7 +142,6 @@ class LoginTest extends TestCase
 
     public function testLoginWithUnregisteredPassword()
     {
-    
         $user = User::factory()->create([
             'email' => 'testname@email.com',
             'password' => '12345678'

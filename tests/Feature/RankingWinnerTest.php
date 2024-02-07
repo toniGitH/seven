@@ -32,7 +32,6 @@ class RankingWinnerTest extends TestCase
 
     public function testRankingWinnerExecutedByAuthenticatedAdmin()
     {
-
         $adminUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->first();
@@ -49,7 +48,6 @@ class RankingWinnerTest extends TestCase
 
     public function testRankingWinnerExecutedByAuthenticatedPlayer()
     {
-
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
         })->first();
@@ -57,7 +55,6 @@ class RankingWinnerTest extends TestCase
         $response = $this->actingAs($playerUser)->json('GET', 'api/players/ranking/winner');
         
         $response->assertStatus(403);
-
     }
 
     public function testRankingExecutedByUnauthenticatedUser()

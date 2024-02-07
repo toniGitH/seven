@@ -71,7 +71,6 @@ class StoreRollTest extends TestCase
 
     public function testRollExecutedByAuthenticatedAdmin()
     {
-
         $adminUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->first();

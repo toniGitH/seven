@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use App\Models\User;
-use App\Models\Roll;
 use Tests\TestCase;
 
 class ShowRollsTest extends TestCase
@@ -31,7 +30,7 @@ class ShowRollsTest extends TestCase
         );
     }
 
-    public function testShowRollsListToAnAuthenticatedPlayer()
+    public function testShowRollsListToAnAuthenticatedPlayerWhoHasRolls()
     {
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
@@ -47,6 +46,23 @@ class ShowRollsTest extends TestCase
         ]);
     }
 
+    public function testShowRollsListToAnAuthenticatedPlayerWhoHasNoRolls()
+    {
+        $playerUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->first();
+
+        $playerUser->rolls()->delete();
+
+        $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id) . '/games');
+
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No rolls found for the user'
+        ]);
+    }
+
     public function testShowAnotherPlayerRollsListToAnAuthenticatedPlayer()
     {
         $playerUser = User::whereHas('roles', function ($query) {
@@ -55,8 +71,7 @@ class ShowRollsTest extends TestCase
 
         $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id)+1 . '/games');
 
-        $response->assertStatus(403);
-                
+        $response->assertStatus(403);   
     }
 
     public function testShowRollsListToAuthenticatedAdmin()
