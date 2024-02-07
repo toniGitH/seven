@@ -32,7 +32,6 @@ class IndexTest extends TestCase
 
     public function testIndexExecutedByAuthenticatedAdmin()
     {
-
         $adminUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->first();
@@ -54,7 +53,6 @@ class IndexTest extends TestCase
 
     public function testIndexExecutedByAuthenticatedPlayer()
     {
-
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
         })->first();
@@ -62,7 +60,6 @@ class IndexTest extends TestCase
         $response = $this->actingAs($playerUser)->json('GET', '/api/players');
         
         $response->assertStatus(403);
-
     }
 
     public function testIndexExecutedByUnauthenticatedUser()

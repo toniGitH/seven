@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class ShowRollsTest extends TestCase
 {
-    
     use RefreshDatabase;
 
     public function setUp(): void
@@ -62,7 +61,6 @@ class ShowRollsTest extends TestCase
         $response->assertJson([
             'message' => 'No rolls found for the user'
         ]);
-
     }
 
     public function testShowAnotherPlayerRollsListToAnAuthenticatedPlayer()
@@ -73,8 +71,7 @@ class ShowRollsTest extends TestCase
 
         $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id)+1 . '/games');
 
-        $response->assertStatus(403);
-                
+        $response->assertStatus(403);   
     }
 
     public function testShowRollsListToAuthenticatedAdmin()

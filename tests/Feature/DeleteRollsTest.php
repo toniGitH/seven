@@ -51,7 +51,6 @@ class DeleteRollsTest extends TestCase
 
         $rollsAfterDelete = Roll::where('user_id', $playerUser->id)->count();
         $this->assertEquals(0, $rollsAfterDelete);
-
     }
 
     public function testDeleteRollsByAuthenticatedPlayerWhoHasNoRolls()
@@ -69,7 +68,6 @@ class DeleteRollsTest extends TestCase
         $response->assertJson([
             'message' => 'No rolls found for the user'
         ]);
-
     }
 
     public function testDeleteAnotherPlayerRollsByAuthenticatedPlayer()
@@ -81,7 +79,6 @@ class DeleteRollsTest extends TestCase
         $response = $this->actingAs($playerUser)->json('DELETE', '/api/players/' . ($playerUser->id)+1 . '/games');
 
         $response->assertStatus(403);
-
     }
 
     public function testDeleteRollsByAuthenticatedAdmin()

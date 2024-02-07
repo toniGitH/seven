@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use App\Models\User;
-use App\Models\Roll;
 use Tests\TestCase;
 
 class GetWinRateTest extends TestCase
@@ -54,8 +53,7 @@ class GetWinRateTest extends TestCase
 
         $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id)+1 . '/average');
 
-        $response->assertStatus(403);
-                
+        $response->assertStatus(403);         
     }
 
     public function testGetWinRateToAnAuthenticatedAdmin()
