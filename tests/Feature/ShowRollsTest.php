@@ -6,11 +6,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use App\Models\User;
-use App\Models\Roll;
 use Tests\TestCase;
 
 class ShowRollsTest extends TestCase
 {
+    
     use RefreshDatabase;
 
     public function setUp(): void
@@ -31,7 +31,7 @@ class ShowRollsTest extends TestCase
         );
     }
 
-    public function testShowRollsListToAnAuthenticatedPlayer()
+    public function testShowRollsListToAnAuthenticatedPlayerWhoHasRolls()
     {
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
@@ -45,6 +45,24 @@ class ShowRollsTest extends TestCase
                     'current success rate',
                     'rolls'
         ]);
+    }
+
+    public function testShowRollsListToAnAuthenticatedPlayerWhoHasNoRolls()
+    {
+        $playerUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->first();
+
+        $playerUser->rolls()->delete();
+
+        $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id) . '/games');
+
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No rolls found for the user'
+        ]);
+
     }
 
     public function testShowAnotherPlayerRollsListToAnAuthenticatedPlayer()
