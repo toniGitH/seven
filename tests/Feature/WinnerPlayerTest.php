@@ -8,7 +8,7 @@ use Laravel\Passport\ClientRepository;
 use App\Models\User;
 use Tests\TestCase;
 
-class RankingWinnerTest extends TestCase
+class WinnerPlayerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -30,7 +30,7 @@ class RankingWinnerTest extends TestCase
         );
     }
 
-    public function testRankingWinnerExecutedByAuthenticatedAdmin()
+    public function testWinnerPlayerExecutedByAuthenticatedAdmin()
     {
         $adminUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
@@ -46,7 +46,35 @@ class RankingWinnerTest extends TestCase
         ]);
     }
 
-    public function testRankingWinnerExecutedByAuthenticatedPlayer()
+    public function testWinnerPlayerExecutedByAuthenticatedAdminIfNotPlayersExisting()
+    {
+        $adminUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->first();
+
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
+    
+        foreach ($players as $player) {
+            $player->rolls()->delete();
+        }
+
+        User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->delete();
+
+        $response = $this->actingAs($adminUser)->json('GET', '/api/players');
+        
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No players found yet.',
+            'players' => []
+        ]);
+    }
+
+    public function testWinnerPlayerExecutedByAuthenticatedPlayer()
     {
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
@@ -57,7 +85,7 @@ class RankingWinnerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testRankingExecutedByUnauthenticatedUser()
+    public function testWinnerPlayerExecutedByUnauthenticatedUser()
     {
         $response = $this->json('GET', 'api/players/ranking/winner');
         $response->assertStatus(401);

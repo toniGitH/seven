@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use App\Models\User;
+use App\Models\Roll;
 use Tests\TestCase;
 
 class IndexTest extends TestCase
@@ -48,6 +49,34 @@ class IndexTest extends TestCase
                     'win_rate',
                 ],
             ],
+        ]);
+    }
+
+    public function testIndexExecutedByAuthenticatedAdminIfNotPlayersExisting()
+    {
+        $adminUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->first();
+
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
+    
+        foreach ($players as $player) {
+            $player->rolls()->delete();
+        }
+
+        User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->delete();
+
+        $response = $this->actingAs($adminUser)->json('GET', '/api/players');
+        
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No players found yet.',
+            'players' => []
         ]);
     }
 
