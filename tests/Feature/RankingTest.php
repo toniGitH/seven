@@ -46,6 +46,34 @@ class RankingTest extends TestCase
         ]);
     }
 
+    public function testRankingExecutedByAuthenticatedAdminIfNotPlayersExisting()
+    {
+        $adminUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->first();
+
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
+    
+        foreach ($players as $player) {
+            $player->rolls()->delete();
+        }
+
+        User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->delete();
+
+        $response = $this->actingAs($adminUser)->json('GET', '/api/players');
+        
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No players found yet.',
+            'players' => []
+        ]);
+    }
+
     public function testRankingExecutedByAuthenticatedPlayer()
     {
         $playerUser = User::whereHas('roles', function ($query) {

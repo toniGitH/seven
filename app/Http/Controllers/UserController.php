@@ -75,9 +75,16 @@ class UserController extends Controller
 
     public function index()
     {
-        $user = Auth::user();
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
 
-        $players = User::where('id', '!=', $user->id)->get();
+        if ($players->isEmpty()) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
+        }
 
         $playersWithWinRate = [];
 
@@ -100,8 +107,16 @@ class UserController extends Controller
 
     public function ranking()
     {
-        $user = Auth::user();
-        $players = User::where('id', '!=', $user->id)->get();
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
+
+        if ($players->isEmpty()) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
+        }
 
         $playersWithWinRate = [];
 
@@ -138,8 +153,17 @@ class UserController extends Controller
 
     public function winner()
     {
-        $user = Auth::user();
-        $players = User::where('id', '!=', $user->id)->get();
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
+
+        if ($players->isEmpty()) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
+        }
+
         $maxWinRate = 0;
         $winner = null;
 
@@ -165,9 +189,17 @@ class UserController extends Controller
 
     public function loser()
     {
-        $user = Auth::user();
-        $players = User::where('id', '!=', $user->id)->get();
+        $players = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->get();
 
+        if ($players->isEmpty()) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
+        }
+        
         $minWinRate = PHP_INT_MAX;
         $loser = null;
 
