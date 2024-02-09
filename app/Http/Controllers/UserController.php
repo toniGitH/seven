@@ -164,14 +164,15 @@ class UserController extends Controller
 
             if ($winRate > $maxWinRate) {
                 $maxWinRate = $winRate;
-                $winners = [
+                $winner = [
                     [
                         'user' => ucfirst($player->name),
                         'win_rate' => $winRate . '%'
                     ]
                 ];
-            } elseif ($winRate == $maxWinRate) {
-                $winners[] = [
+            } 
+            elseif ($winRate == $maxWinRate) {
+                $winner[] = [
                     'user' => ucfirst($player->name),
                     'win_rate' => $winRate . '%'
                 ];
@@ -180,7 +181,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Player or players with the highest win rate',
-            'winner' => $winners
+            'winner' => $winner
         ], 200);
     }
 
@@ -205,12 +206,22 @@ class UserController extends Controller
             $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
             $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
 
-            if ($winRate < $minWinRate) {
-                $minWinRate = $winRate;
-                $loser = [
-                    'user' => ucfirst($player->name),
-                    'win_rate' => $winRate . '%'
-                ];
+            if ($winRate <= $minWinRate) {
+                if ($winRate == $minWinRate) {
+                    $loser[] = [
+                        'user' => ucfirst($player->name),
+                        'win_rate' => $winRate . '%'
+                    ];
+                } 
+                else {
+                    $minWinRate = $winRate;
+                    $loser = [
+                        [
+                            'user' => ucfirst($player->name),
+                            'win_rate' => $winRate . '%'
+                        ]
+                    ];
+                }
             }
         }
 
