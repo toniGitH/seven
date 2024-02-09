@@ -73,14 +73,14 @@ class UserController extends Controller
         ], 200);
     }
 
-    private function getPlayerWinRates() {
-        // Se obtienen todos los usuarios que tengan el rol de player. Se buscarán, dentro de la tabla users, aquellos usuarios que,
-        // en base a la relación que tienen con la tabla roles, tengan el rol player en dicha tabla.
+    private function getPlayerWinRates()
+    {
         $players = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
         })->get();
 
         $playersWithWinRate = [];
+
         foreach ($players as $player) {
             $totalRolls = Roll::where('user_id', $player->id)->count();
             $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
@@ -164,7 +164,14 @@ class UserController extends Controller
 
             if ($winRate > $maxWinRate) {
                 $maxWinRate = $winRate;
-                $winner = [
+                $winners = [
+                    [
+                        'user' => ucfirst($player->name),
+                        'win_rate' => $winRate . '%'
+                    ]
+                ];
+            } elseif ($winRate == $maxWinRate) {
+                $winners[] = [
                     'user' => ucfirst($player->name),
                     'win_rate' => $winRate . '%'
                 ];
@@ -172,8 +179,8 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'Player with the highest win rate',
-            'winner' => $winner
+            'message' => 'Player or players with the highest win rate',
+            'winner' => $winners
         ], 200);
     }
 
