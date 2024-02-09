@@ -73,30 +73,35 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function index()
-    {
+    private function getPlayerWinRates() {
+        // Se obtienen todos los usuarios que tengan el rol de player. Se buscarán, dentro de la tabla users, aquellos usuarios que,
+        // en base a la relación que tienen con la tabla roles, tengan el rol player en dicha tabla.
         $players = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
         })->get();
 
-        if ($players->isEmpty()) {
-            return response()->json([
-                'message' => 'No players found yet.',
-                'players' => []
-            ], 404);
-        }
-
         $playersWithWinRate = [];
-
         foreach ($players as $player) {
             $totalRolls = Roll::where('user_id', $player->id)->count();
             $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
             $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
-
             $playersWithWinRate[] = [
                 'user' => ucfirst($player->name),
-                'win_rate' => $winRate . '%'
+                'win_rate' => $winRate 
             ];
+        }
+        return $playersWithWinRate;
+    }
+
+    public function index()
+    {
+        $playersWithWinRate = $this->getPlayerWinRates();
+
+        if (empty($playersWithWinRate)) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
         }
 
         return response()->json([
@@ -107,28 +112,13 @@ class UserController extends Controller
 
     public function ranking()
     {
-        $players = User::whereHas('roles', function ($query) {
-            $query->where('name', 'player');
-        })->get();
+        $playersWithWinRate = $this->getPlayerWinRates();
 
-        if ($players->isEmpty()) {
+        if (empty($playersWithWinRate)) {
             return response()->json([
                 'message' => 'No players found yet.',
                 'players' => []
             ], 404);
-        }
-
-        $playersWithWinRate = [];
-
-        foreach ($players as $player) {
-            $totalRolls = Roll::where('user_id', $player->id)->count();
-            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
-            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
-
-            $playersWithWinRate[] = [
-                'user' => ucfirst($player->name),
-                'win_rate' => $winRate 
-            ];
         }
 
         usort($playersWithWinRate, function ($a, $b) {
