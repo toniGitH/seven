@@ -84,6 +84,11 @@ class RollController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        $rolls = Roll::where('user_id', $userId)->get();
+        if ($rolls->isEmpty()) {
+            return response()->json(['message' => 'No rolls found for the user'], 404);
+        }
+        
         $totalRolls = Roll::where('user_id', $id)->count();
         $wonRolls = Roll::where('user_id', $id)->where('won', true)->count();
         $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
