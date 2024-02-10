@@ -73,18 +73,11 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function index()
+    private function getPlayerWinRates()
     {
         $players = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
         })->get();
-
-        if ($players->isEmpty()) {
-            return response()->json([
-                'message' => 'No players found yet.',
-                'players' => []
-            ], 404);
-        }
 
         $playersWithWinRate = [];
 
@@ -92,11 +85,23 @@ class UserController extends Controller
             $totalRolls = Roll::where('user_id', $player->id)->count();
             $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
             $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
-
             $playersWithWinRate[] = [
                 'user' => ucfirst($player->name),
-                'win_rate' => $winRate . '%'
+                'win_rate' => $winRate 
             ];
+        }
+        return $playersWithWinRate;
+    }
+
+    public function index()
+    {
+        $playersWithWinRate = $this->getPlayerWinRates();
+
+        if (empty($playersWithWinRate)) {
+            return response()->json([
+                'message' => 'No players found yet.',
+                'players' => []
+            ], 404);
         }
 
         return response()->json([
@@ -107,28 +112,13 @@ class UserController extends Controller
 
     public function ranking()
     {
-        $players = User::whereHas('roles', function ($query) {
-            $query->where('name', 'player');
-        })->get();
+        $playersWithWinRate = $this->getPlayerWinRates();
 
-        if ($players->isEmpty()) {
+        if (empty($playersWithWinRate)) {
             return response()->json([
                 'message' => 'No players found yet.',
                 'players' => []
             ], 404);
-        }
-
-        $playersWithWinRate = [];
-
-        foreach ($players as $player) {
-            $totalRolls = Roll::where('user_id', $player->id)->count();
-            $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
-            $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
-
-            $playersWithWinRate[] = [
-                'user' => ucfirst($player->name),
-                'win_rate' => $winRate 
-            ];
         }
 
         usort($playersWithWinRate, function ($a, $b) {
@@ -175,6 +165,14 @@ class UserController extends Controller
             if ($winRate > $maxWinRate) {
                 $maxWinRate = $winRate;
                 $winner = [
+                    [
+                        'user' => ucfirst($player->name),
+                        'win_rate' => $winRate . '%'
+                    ]
+                ];
+            } 
+            elseif ($winRate == $maxWinRate) {
+                $winner[] = [
                     'user' => ucfirst($player->name),
                     'win_rate' => $winRate . '%'
                 ];
@@ -182,7 +180,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'Player with the highest win rate',
+            'message' => 'Player or players with the highest win rate',
             'winner' => $winner
         ], 200);
     }
@@ -208,12 +206,22 @@ class UserController extends Controller
             $wonRolls = Roll::where('user_id', $player->id)->where('won', true)->count();
             $winRate = $totalRolls > 0 ? ($wonRolls / $totalRolls) * 100 : 0;
 
-            if ($winRate < $minWinRate) {
-                $minWinRate = $winRate;
-                $loser = [
-                    'user' => ucfirst($player->name),
-                    'win_rate' => $winRate . '%'
-                ];
+            if ($winRate <= $minWinRate) {
+                if ($winRate == $minWinRate) {
+                    $loser[] = [
+                        'user' => ucfirst($player->name),
+                        'win_rate' => $winRate . '%'
+                    ];
+                } 
+                else {
+                    $minWinRate = $winRate;
+                    $loser = [
+                        [
+                            'user' => ucfirst($player->name),
+                            'win_rate' => $winRate . '%'
+                        ]
+                    ];
+                }
             }
         }
 
