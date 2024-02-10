@@ -198,7 +198,7 @@ class UserController extends Controller
             ], 404);
         }
         
-        $minWinRate = PHP_INT_MAX;
+        $minWinRate = 101;
         $loser = null;
 
         foreach ($players as $player) {
@@ -226,7 +226,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'Player with the lowest win rate',
+            'message' => 'Player or players with the lowest win rate',
             'loser' => $loser
         ], 200);
     }
