@@ -23,7 +23,7 @@ class UserController extends Controller
             'name'=>$request->name ? $request->name : 'anonimo',
             'email'=>$request->email,
             'password'=>bcrypt($request->password)
-        ])->assignRole('Player');
+        ])->assignRole('player');
         $token = $user->createToken('authToken')->accessToken;
         return response([
             'message' => 'User ' . ucfirst($user->name) . ' registered successfully',
