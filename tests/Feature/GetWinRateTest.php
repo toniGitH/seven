@@ -16,18 +16,13 @@ class GetWinRateTest extends TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
-        $this->createPersonalAccessTokenClient();
-        $this->seed();
-    }
-
-    protected function createPersonalAccessTokenClient()
-    {
         $clientRepository = app(ClientRepository::class);
         $clientRepository->createPersonalAccessClient(
             null,
             'Personal Access Client',
             'http://localhost'
         );
+        $this->seed();
     }
 
     public function testGetWinRateToAnAuthenticatedPlayer()
