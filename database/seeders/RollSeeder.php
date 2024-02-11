@@ -136,7 +136,7 @@ class RollSeeder extends Seeder
             'user_id' => 6
         ]);
         // User 7 rolls
-        Roll::create([
+        /* Roll::create([
             'dice1' => 1,
             'dice2' => 3,
             'won' => false,
@@ -165,7 +165,7 @@ class RollSeeder extends Seeder
             'dice2' => 4,
             'won' => false,
             'user_id' => 7
-        ]);
+        ]); */
         // User 8 rolls
         Roll::create([
             'dice1' => 4,
