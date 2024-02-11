@@ -16,21 +16,16 @@ class GetWinRateTest extends TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
-        $this->createPersonalAccessTokenClient();
-        $this->seed();
-    }
-
-    protected function createPersonalAccessTokenClient()
-    {
         $clientRepository = app(ClientRepository::class);
         $clientRepository->createPersonalAccessClient(
             null,
             'Personal Access Client',
             'http://localhost'
         );
+        $this->seed();
     }
 
-    public function testGetWinRateToAnAuthenticatedPlayer()
+    public function testGetWinRateToAnAuthenticatedPlayerWhoHasRolls()
     {
         $playerUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'player');
@@ -42,6 +37,23 @@ class GetWinRateTest extends TestCase
         $response->assertJsonStructure([
                     'user',
                     'current success rate'
+        ]);
+    }
+
+    public function testGetWinRateToAnAuthenticatedPlayerWhoHasNoRolls()
+    {
+        $playerUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'player');
+        })->first();
+
+        $playerUser->rolls()->delete();
+
+        $response = $this->actingAs($playerUser)->json('GET', '/api/players/' . ($playerUser->id) . '/games');
+
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'No rolls found for the user'
         ]);
     }
 
