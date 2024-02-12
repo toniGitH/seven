@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Laravel\Passport\ClientRepository;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -11,19 +9,6 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        Artisan::call('migrate');
-        $clientRepository = app(ClientRepository::class);
-        $clientRepository->createPersonalAccessClient(
-            null,
-            'Personal Access Client',
-            'http://localhost'
-        );
-        $this->seed();
-    }
-    
     public function testLoginWithValidCredentials()
     {
         $user = User::factory()->create([
